@@ -1,0 +1,174 @@
+
+body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #22a6ff;
+}
+
+.lemon {
+    position: relative;
+    width: 10rem;
+    height: 10rem;
+    background-size: 22px 22px;
+    background-color: #fae900;
+    border-radius: 20% 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .top {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .bottom {
+        width: 100%;
+        display: flex;
+        display: flex;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}
+
+.eye {
+    width: 2rem;
+    height: 2rem;
+    background-color: #ffffff;
+    border-style: solid;
+    border-width: 0.2rem;
+    border-color: #fac000;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0.5rem;
+    margin-top: 0;
+    position: relative;
+    transition: all 0.3s;
+    &::before {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        content: '';
+        display: block;
+        background-color: #50abe0;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+    }
+    &::after {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        content: '';
+        display: block;
+        background-color: #000000;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+    }
+}
+
+.nose {
+    width: 1rem;
+    height: 3rem;
+    background-color: #fac000;
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    margin-top: 0.5rem;
+}
+
+.mouth {
+    .lip {
+        width: 3rem;
+        height: 0.5rem;
+        background-color: #ff0000;
+        &:first-child {
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+            border-bottom: 1px solid #fac000;
+        }
+        &:last-child {
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+        }
+    }
+}
+
+@media only screen and (max-width: 256px) {
+    .eye {
+        height: 0rem;
+    }
+}
+
+@base: #22a6ff;
+@face: #fae900;
+@face-shadow: #fac000;
+@eyeball: #ffffff;
+@eye: #50abe0;
+@pupil: #000000;
+@lip: #ff0000;
+
+.gn-theme-vars() {
+    @result: {
+        base: --base, @base;
+        face: --face, @face;
+        face-shadow: --face-shadow, @face-shadow;
+        eyeball: --eyeball, @eyeball;
+        eye: --eye, @eye;
+        pupil: --pupil, @pupil;
+        lip: --lip, @lip;
+    }
+}
+
+.background-color-var(@var; @important: false;) {
+    @value: extract(@var, 1);
+    @fallback: extract(@var, 2);
+    background-color: var(@value, @fallback) if(@important, ~'!important', );
+}
+
+.border-color-var(@var; @important: false;) {
+    @value: extract(@var, 1);
+    @fallback: extract(@var, 2);
+    border-color: var(@value, @fallback) if(@important, ~'!important', );
+}
+
+#get-theme(@theme-vars) {
+    body {
+        .background-color-var(@theme-vars[base]);
+    }
+    .lemon {
+        .background-color-var(@theme-vars[face]);
+    }
+    .eye {
+        .background-color-var(@theme-vars[eyeball]);
+        .border-color-var(@theme-vars[face-shadow]);
+        &::before {
+            .background-color-var(@theme-vars[eye]);
+        }
+        &::after {
+            .background-color-var(@theme-vars[pupil]);
+        }
+    }
+    .nose {
+        .background-color-var(@theme-vars[face-shadow]);
+    }
+    .mouth {
+        .lip {
+            .background-color-var(@theme-vars[lip]);
+            &:first-child {
+                .border-color-var(@theme-vars[face-shadow]);
+            }
+        }
+    }
+}
+
+@theme-vars: .gn-theme-vars()[@result];
+
+#get-theme(@theme-vars);
